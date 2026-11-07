@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다온봇 - 스푼 DJ 도우미 봇</title>
+<meta name="description" content="신청곡, 룰렛, 랭킹까지. 설치만 하면 바로 쓰는 스푼 DJ 봇">
+<style>
+:root{--bg:#0e0e10;--card:#18181b;--line:#2a2a2e;--txt:#f2f2f2;--sub:#a0a0a8;--ac:#ff6a1a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:'Pretendard','Malgun Gothic',system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:rgba(14,14,16,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:9}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px}.logo span{color:var(--ac)}
+nav a{margin-left:22px;color:var(--sub);font-size:15px}nav a:hover{color:var(--txt)}
+.btn{display:inline-block;background:var(--ac);color:#fff;padding:14px 28px;border-radius:12px;font-weight:700;font-size:16px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt);margin-left:8px}
+.hero{padding:96px 0 72px;text-align:center}
+.hero h1{font-size:clamp(32px,6vw,54px);line-height:1.2;margin:0 0 18px}.hero h1 em{font-style:normal;color:var(--ac)}
+.hero p{color:var(--sub);font-size:18px;margin:0 auto 32px;max-width:560px}
+.hero small{display:block;margin-top:14px;color:var(--sub)}
+section{padding:64px 0}section h2{font-size:30px;margin:0 0 8px}.lead{color:var(--sub);margin:0 0 32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card .ic{font-size:28px}.card h3{margin:10px 0 4px;font-size:17px}.card p{margin:0;color:var(--sub);font-size:14px}
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{display:flex;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.step::before{counter-increment:s;content:counter(s);flex:none;width:34px;height:34px;border-radius:50%;background:var(--ac);display:grid;place-items:center;font-weight:800}
+.step b{display:block;margin-bottom:2px}.step span{color:var(--sub);font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+td,th{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}th{color:var(--sub);font-weight:500;background:#141416}
+code{background:#26262a;padding:2px 7px;border-radius:6px;font-size:13px}
+.note{background:#2a2112;border:1px solid #4a3a16;color:#e8c46a;border-radius:12px;padding:14px 18px;font-size:14px;margin-top:16px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}details p{color:var(--sub);margin:10px 0 0;font-size:14px}
+.dl{text-align:center;background:linear-gradient(180deg,#1d1308,var(--card));border:1px solid #3a2a14;border-radius:20px;padding:48px 20px}
+footer{padding:36px 0;border-top:1px solid var(--line);color:var(--sub);font-size:13px;text-align:center}
+@media(max-width:640px){nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a href="#" class="logo"><span>다온</span>봇</a>
+  <nav><a href="#features">기능</a><a href="#guide">사용법</a><a href="#commands">명령어</a><a href="#faq">FAQ</a><a href="#download">다운로드</a></nav>
+</div></header>
+
+<div class="wrap hero">
+  <h1>방송은 <em>다온봇</em>에게,<br>DJ님은 이야기에만 집중하세요</h1>
+  <p>신청곡 플레이어, 룰렛, 랭킹, 퀴즈까지. 설치하고 로그인만 하면 바로 시작돼요.</p>
+  <a class="btn" href="#download">Windows용 다운로드</a><a class="btn ghost" href="#guide">사용법 보기</a>
+  <small>Windows 10 이상 · 무료</small>
+</div>
+
+<section id="features"><div class="wrap">
+  <h2>이런 걸 해줘요</h2><p class="lead">DJ 화면 하나에서 모든 게 관리돼요.</p>
+  <div class="grid">
+    <div class="card"><div class="ic">🎵</div><h3>신청곡 플레이어</h3><p>청취자가 채팅으로 신청하면 대기열에 쌓이고, 유튜브로 자동 재생돼요.</p></div>
+    <div class="card"><div class="ic">🎰</div><h3>룰렛 · 보관함</h3><p>후원 조건에 맞춰 룰렛이 돌고, 당첨 결과는 청취자별 보관함에 저장돼요.</p></div>
+    <div class="card"><div class="ic">🏆</div><h3>랭킹 · 레벨</h3><p>채팅과 하트로 점수가 쌓이고 레벨이 올라요. <code>!랭킹</code> 으로 바로 확인.</p></div>
+    <div class="card"><div class="ic">❓</div><h3>퀴즈</h3><p>DJ가 문제를 내면 정답자에게 자동으로 점수를 줘요.</p></div>
+    <div class="card"><div class="ic">🎯</div><h3>여러 방송 지원</h3><p>허용받은 DJ 방송으로 클릭 한 번에 전환할 수 있어요.</p></div>
+    <div class="card"><div class="ic">⚙️</div><h3>쉬운 설정</h3><p>답장 문구, 점수 규칙, 명령어 이름을 화면에서 바로 바꿔요.</p></div>
+  </div>
+</div></section>
+
+<section id="guide"><div class="wrap">
+  <h2>사용 방법</h2><p class="lead">처음 한 번만 설정하면 다음부터는 앱만 켜면 돼요.</p>
+  <div class="steps">
+    <div class="step"><div><b>다온봇 설치</b><span>아래에서 설치 파일을 받아 실행해 주세요. 설치 후 바탕화면 아이콘으로 열어요.</span></div></div>
+    <div class="step"><div><b>Client ID / Secret 입력</b><span>첫 실행 화면에 스푼 개발자센터에서 받은 값을 붙여넣어요. (봇 전용 스푼 계정으로 만든 앱이어야 해요)</span></div></div>
+    <div class="step"><div><b>DJ 계정으로 허용</b><span>브라우저가 열리면 방송하는 DJ 계정으로 로그인하고 [허용]을 눌러요.</span></div></div>
+    <div class="step"><div><b>방송 시작</b><span>방송을 켜면 자동으로 연결돼요. 앱은 켜 둔 채로 두세요. 창을 닫으면 봇이 멈춰요.</span></div></div>
+  </div>
+  <div class="note">⚠️ 입장·팔로우 인사를 쓰려면 DJ가 방송 중 봇 계정을 <b>매니저</b>로 지정해야 해요.</div>
+</div></section>
+
+<section id="commands"><div class="wrap">
+  <h2>명령어</h2><p class="lead">청취자는 채팅창에 입력하면 돼요.</p>
+  <table>
+    <tr><th>대상</th><th>명령어</th><th>설명</th></tr>
+    <tr><td>청취자</td><td><code>!내정보 생성</code> <code>!내정보</code></td><td>내 레벨과 점수 확인</td></tr>
+    <tr><td>청취자</td><td><code>!랭킹</code></td><td>상위 랭킹 보기</td></tr>
+    <tr><td>청취자</td><td><code>!킵</code> <code>!킵 10사용 2</code></td><td>룰렛 보관함 확인 / 사용</td></tr>
+    <tr><td>청취자</td><td><code>!신청 가수-제목 유튜브링크</code></td><td>신청곡 등록</td></tr>
+    <tr><td>청취자</td><td><code>!신청목록</code> <code>!신청취소</code></td><td>목록 확인 / 내 신청 취소</td></tr>
+    <tr><td>DJ</td><td><code>!퀴즈 질문 | 정답 | 점수</code></td><td>퀴즈 시작 (<code>!퀴즈종료</code>로 끝내기)</td></tr>
+    <tr><td>DJ</td><td><code>!신청삭제 번호</code> <code>!룰렛테스트 100</code></td><td>신청곡 삭제 / 룰렛 테스트</td></tr>
+  </table>
+</div></section>
+
+<section id="download"><div class="wrap"><div class="dl">
+  <h2>다온봇 다운로드</h2>
+  <p class="lead">버전 0.1.0 · Windows 10 / 11 (64bit)</p>
+  <a class="btn" id="dlbtn" href="#download">⬇ 설치 파일 받기</a>
+  <p id="dlmsg" class="lead" style="margin-top:12px;font-size:14px;color:#e8c46a"></p>
+  <p class="lead" style="margin-top:16px;font-size:13px">"Windows의 PC 보호" 창이 뜨면 [추가 정보] → [실행]을 눌러 주세요. 아직 정식 서명 전 버전이에요.</p>
+</div></div></section>
+
+<section id="faq"><div class="wrap">
+  <h2>자주 묻는 질문</h2><p class="lead">&nbsp;</p>
+  <details><summary>앱 창을 닫아도 되나요?</summary><p>닫으면 봇도 같이 꺼져요. 방송 중에는 창을 열어 두거나 최소화해 주세요.</p></details>
+  <details><summary>다른 DJ 방송에도 들어갈 수 있나요?</summary><p>그 DJ가 [허용]을 눌러 준 방송에만 들어갈 수 있어요. 앱의 [방송 선택] 탭에서 연결 링크를 만들어 DJ에게 보내 주세요.</p></details>
+  <details><summary>비밀번호나 토큰은 안전한가요?</summary><p>모든 정보는 내 PC에만 저장되고 외부 서버로 보내지 않아요. 단, 저장 폴더는 다른 사람에게 공유하지 마세요.</p></details>
+  <details><summary>봇이 반응하지 않아요</summary><p>앱 메뉴의 [봇 → 로그 보기]에서 오류 메시지를 확인해 주세요. 같은 봇이 다른 곳에서 켜져 있으면 연결이 거절돼요.</p></details>
+</div></section>
+
+<footer><div class="wrap">© 다온봇 · 스푼(Spoon) 공식 서비스가 아니며 스푼 오픈 API를 사용하는 비공식 도구예요.</div></footer>
+<script>
+// 설치 파일을 올린 뒤 이 주소만 바꾸면 돼요. (예: GitHub Releases 의 exe 직접 링크)
+const DOWNLOAD_URL = '';
+const btn = document.getElementById('dlbtn');
+if (DOWNLOAD_URL) { btn.href = DOWNLOAD_URL; btn.setAttribute('download', ''); }
+else btn.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('dlmsg').textContent = '설치 파일을 준비 중이에요. 곧 열려요!'; });
+</script>
+</body>
+</html>
