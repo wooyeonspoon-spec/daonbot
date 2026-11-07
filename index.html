@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>다온봇 - 스푼 DJ 도우미 봇</title>
+<link rel="icon" href="icon.png">
 <meta name="description" content="신청곡, 룰렛, 랭킹까지. 설치만 하면 바로 쓰는 스푼 DJ 봇">
 <style>
 :root{--bg:#0e0e10;--card:#18181b;--line:#2a2a2e;--txt:#f2f2f2;--sub:#a0a0a8;--ac:#ff6a1a}
@@ -42,13 +43,13 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--sub);font-siz
 </head>
 <body>
 <header><div class="wrap">
-  <a href="#" class="logo"><span>다온</span>봇</a>
+  <a href="#" class="logo"><img src="icon.png" alt="" style="width:28px;height:28px;border-radius:7px;vertical-align:-7px;margin-right:8px"><span>다온</span>봇</a>
   <nav><a href="#features">기능</a><a href="#guide">사용법</a><a href="#commands">명령어</a><a href="#faq">FAQ</a><a href="#download">다운로드</a></nav>
 </div></header>
 
 <div class="wrap hero">
   <h1>방송은 <em>다온봇</em>에게,<br>DJ님은 이야기에만 집중하세요</h1>
-  <p>신청곡 플레이어, 룰렛, 랭킹, 퀴즈까지. 압축을 풀고 로그인만 하면 바로 시작돼요.</p>
+  <p>신청곡 플레이어, 룰렛, 랭킹, 퀴즈까지. 설치하고 로그인만 하면 바로 시작돼요.</p>
   <a class="btn" href="#download">Windows용 다운로드</a><a class="btn ghost" href="#guide">사용법 보기</a>
   <small>Windows 10 이상 · 무료</small>
 </div>
@@ -68,8 +69,8 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--sub);font-siz
 <section id="guide"><div class="wrap">
   <h2>사용 방법</h2><p class="lead">처음 한 번만 설정하면 다음부터는 앱만 켜면 돼요.</p>
   <div class="steps">
-    <div class="step"><div><b>다운로드 후 압축 풀기</b><span>아래 다운로드 버튼으로 받은 zip 파일을 우클릭 → [모두 압축 풀기]를 눌러 주세요. 풀린 폴더는 원하는 곳(예: D 드라이브)에 두세요.</span></div></div>
-    <div class="step"><div><b>다온봇 실행</b><span>폴더 안의 DaonBot-Setup (파란 아이콘) 파일을 더블클릭해요. 따로 입력할 값은 없어요.</span></div></div>
+    <div class="step"><div><b>다운로드 후 설치</b><span>아래 다운로드 버튼으로 받은 DaonBot-Setup 파일을 더블클릭해서 설치해 주세요. 설치가 끝나면 바탕화면에 다온봇 바로가기가 생겨요.</span></div></div>
+    <div class="step"><div><b>다온봇 실행</b><span>바탕화면의 다온봇 아이콘을 더블클릭해요. 따로 입력할 값은 없어요.</span></div></div>
     <div class="step"><div><b>DJ 계정으로 허용</b><span>브라우저가 열리면 방송하는 DJ 계정으로 로그인하고 [허용]을 눌러요.</span></div></div>
     <div class="step"><div><b>방송 시작</b><span>방송을 켜면 자동으로 연결돼요. 앱은 켜 둔 채로 두세요. 창을 닫으면 봇이 멈춰요.</span></div></div>
   </div>
@@ -92,7 +93,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--sub);font-siz
 
 <section id="download"><div class="wrap"><div class="dl">
   <h2>다온봇 다운로드</h2>
-  <p class="lead">버전 0.1.0 · Windows 10 / 11 (64bit) · 압축 파일(약 110MB)</p>
+  <p class="lead">Windows 10 / 11 (64bit) · 설치 파일(약 80MB)</p>
   <a class="btn" id="dlbtn" href="#download">⬇ 다온봇 다운로드</a>
   <p id="dlmsg" class="lead" style="margin-top:12px;font-size:14px;color:#e8c46a"></p>
   <p class="lead" style="margin-top:16px;font-size:13px">처음 실행할 때 "Windows의 PC 보호" 창이 뜨면 [추가 정보] → [실행]을 눌러 주세요. 아직 정식 서명 전 버전이에요.</p>
@@ -108,11 +109,18 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--sub);font-siz
 
 <footer><div class="wrap">© 다온봇 · 스푼(Spoon) 공식 서비스가 아니며 스푼 오픈 API를 사용하는 비공식 도구예요.</div></footer>
 <script>
-// 설치 파일을 올린 뒤 이 주소만 바꾸면 돼요. (예: GitHub Releases 의 exe 직접 링크)
-const DOWNLOAD_URL = 'https://github.com/wooyeonspoon-spec/daonbot/releases/latest/download/DaonBot-win.zip.zip';
+// 다운로드 버튼은 GitHub 에 올린 "가장 최신 릴리스"의 설치 파일(.exe)을 자동으로 찾아요.
+// 새 버전을 올려도 이 파일을 고칠 필요가 없어요.
+const REPO = 'wooyeonspoon-spec/daonbot';
 const btn = document.getElementById('dlbtn');
-if (DOWNLOAD_URL) { btn.href = DOWNLOAD_URL; btn.setAttribute('download', ''); }
-else btn.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('dlmsg').textContent = '다운로드 준비 중이에요. 곧 열려요!'; });
+btn.href = `https://github.com/${REPO}/releases/latest`;   // 자동 검색이 안 될 때를 위한 기본 주소
+fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
+  .then((r) => (r.ok ? r.json() : Promise.reject()))
+  .then((rel) => {
+    const a = (rel.assets || []).find((x) => /\.exe$/i.test(x.name));
+    if (a) { btn.href = a.browser_download_url; btn.textContent = `⬇ 다온봇 ${rel.tag_name} 다운로드`; }
+  })
+  .catch(() => {});
 </script>
 </body>
 </html>
