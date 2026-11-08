@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>다온봇 연결 요청</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<style>
+  :root { --bg:#111; --panel:#1b1b1d; --line:#2c2c30; --text:#f2f2f2; --sub:#9a9aa2; --brand:#ff6a1a; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Pretendard','Malgun Gothic','Apple SD Gothic Neo',sans-serif; }
+  body { min-height:100vh; display:grid; place-items:center; padding:24px; }
+  .wrap { width:100%; max-width:680px; }
+  .eyebrow { font-size:13px; color:var(--sub); font-weight:600; margin:0 0 14px; }
+  h1 { font-size:26px; line-height:1.35; margin:0 0 12px; font-weight:800; letter-spacing:-.02em; }
+  h1 b { color:var(--brand); }
+  .desc { color:var(--sub); font-size:14px; margin:0 0 26px; line-height:1.6; }
+  hr { border:0; border-top:1px solid var(--line); margin:0 0 24px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:22px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; min-height:128px; }
+  .label { font-size:13px; color:var(--sub); margin:0 0 14px; font-weight:600; }
+  .big { font-size:20px; font-weight:800; margin:0 0 12px; }
+  .small { font-size:12px; color:var(--sub); }
+  .acct { display:flex; gap:14px; align-items:center; }
+  .avatar { width:56px; height:56px; border-radius:50%; background:#3a4a5c; object-fit:cover; flex:none; }
+  .nick { font-weight:800; font-size:16px; margin:0 0 4px; word-break:break-all; }
+  .btns { display:grid; grid-template-columns:1fr 1.5fr; gap:14px; }
+  button { font:inherit; font-size:15px; font-weight:700; border-radius:14px; padding:17px 12px; cursor:pointer; border:1px solid var(--line); }
+  button:disabled { opacity:.55; cursor:not-allowed; }
+  .no { background:#171717; color:var(--text); }
+  .no:hover:not(:disabled) { border-color:#555; }
+  .yes { background:var(--brand); color:#fff; border-color:var(--brand); }
+  .yes:hover:not(:disabled) { filter:brightness(1.08); }
+  .msg { text-align:center; padding:12px 4px 4px; }
+  .msg .icon { font-size:44px; margin-bottom:10px; }
+  .msg h2 { margin:0 0 10px; font-size:22px; }
+  .msg p { color:var(--sub); font-size:14px; line-height:1.7; margin:0 0 6px; }
+  .help { text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 20px; margin:18px 0; font-size:14px; line-height:1.8; color:#d6d6da; }
+  .retry { max-width:240px; margin:8px auto 0; display:block; background:var(--brand); color:#fff; border-color:var(--brand); }
+  .hide { display:none !important; }
+  @media (max-width:600px) { .cards,.btns { grid-template-columns:1fr; } h1 { font-size:22px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 불러오는 중 -->
+  <section id="s-load" class="msg"><div class="icon">⏳</div><h2>연결 정보를 확인하고 있어요...</h2><p>주소창 근처에 <b>"이 기기의 다른 앱 및 서비스에 연결"</b> 허용 창이 뜨면<br><b>[허용]</b>을 눌러 주세요. (내 PC의 다온봇과 연결하는 데 필요해요)</p></section>
+
+  <!-- 연결 확인 (메인 화면) -->
+  <section id="s-ask" class="hide">
+    <p class="eyebrow">연결 요청</p>
+    <h1>현재 계정을 <b>다온봇</b>에 연결하시겠습니까?</h1>
+    <p class="desc">연결할 계정과 버전을 확인하세요. 취소하면 이 요청은 즉시 만료됩니다.</p>
+    <hr>
+    <div class="cards">
+      <div class="card">
+        <p class="label">버전</p>
+        <p class="big" id="ver">다온봇</p>
+        <p class="small">연결 방식 · 스푼 공식 로그인</p>
+      </div>
+      <div class="card">
+        <p class="label">Spoon 계정</p>
+        <div class="acct">
+          <img class="avatar" id="avatar" alt="" referrerpolicy="no-referrer">
+          <div><p class="nick" id="nick">-</p><p class="small" id="sub"></p></div>
+        </div>
+      </div>
+    </div>
+    <div class="btns">
+      <button class="no" id="b-no">취소</button>
+      <button class="yes" id="b-yes">연결</button>
+    </div>
+  </section>
+
+  <!-- 완료 -->
+  <section id="s-done" class="msg hide"><div class="icon">✅</div><h2>연결이 완료됐어요!</h2><p>이 창은 닫고 <b>다온봇 앱</b>으로 돌아가세요.<br>잠시 후 봇이 자동으로 시작돼요.</p></section>
+
+  <!-- 취소 -->
+  <section id="s-cancel" class="msg hide"><div class="icon">🚫</div><h2>연결을 취소했어요</h2><p>이 요청은 만료됐어요. 다시 연결하려면<br>다온봇 앱에서 <b>[로그인]</b>을 눌러 주세요.</p></section>
+
+  <!-- 오류 -->
+  <section id="s-err" class="msg hide">
+    <div class="icon">⚠️</div><h2 id="e-title">연결하지 못했어요</h2><p id="e-body"></p>
+    <div class="help hide" id="e-help">
+      <b>이렇게 해 보세요</b><br>
+      1. <b>다온봇 앱</b>이 켜져 있는지 확인해 주세요.<br>
+      2. 주소창 근처에 <b>"이 기기의 다른 앱 및 서비스에 연결"</b> 같은 허용 창이 뜨면 <b>[허용]</b>을 눌러 주세요.<br>
+      3. 실수로 [차단]을 눌렀다면 주소창 왼쪽 <b>자물쇠(또는 설정) 아이콘 → 사이트 설정 → 로컬 네트워크 접근 → 허용</b>으로 바꿔 주세요.<br>&nbsp;&nbsp;&nbsp;그다음 아래 <b>[다시 시도]</b>를 눌러 주세요.<br>
+      4. 계속 안 되면 <b>Chrome / Edge</b> 브라우저로 열어 주세요.
+    </div>
+    <button class="retry hide" id="b-retry">다시 시도</button>
+  </section>
+
+</div>
+<script>
+(() => {
+  const APP = 'http://127.0.0.1:3001';          // 내 PC에서 켜진 다온봇 (이 PC 안에서만 통신해요)
+  const $ = (id) => document.getElementById(id);
+  const q = new URLSearchParams(location.search);
+  const code = q.get('code'), state = q.get('state'), spoonError = q.get('error');
+  history.replaceState(null, '', location.pathname); // 주소창에서 code 같은 긴 값을 지워요
+
+  const show = (id) => { for (const s of document.querySelectorAll('section')) s.classList.toggle('hide', s.id !== id); };
+  const fail = (title, body, help) => {
+    $('e-title').textContent = title; $('e-body').innerHTML = body;
+    $('e-help').classList.toggle('hide', !help); $('b-retry').classList.toggle('hide', !help);
+    show('s-err');
+  };
+  async function call(path, body) {
+    const r = await fetch(APP + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Daon': '1' }, body: JSON.stringify(body) });
+    return r.json();
+  }
+  const EXPIRED = ['요청이 만료됐거나 이미 처리됐어요', '다온봇 앱에서 <b>[로그인]</b>을 다시 눌러 주세요.'];
+
+  async function load() {
+    show('s-load');
+    if (!state || (!code && !spoonError)) return fail('잘못된 접근이에요', '다온봇 앱에서 <b>[로그인]</b> 버튼을 눌러 들어와 주세요.', false);
+    let d;
+    try { d = await call('/api/connect/preview', { code, state, error: spoonError }); }
+    catch { return fail('다온봇 앱과 통신하지 못했어요', '이 PC에서 다온봇 앱이 켜져 있어야 연결할 수 있어요.', true); }
+    if (d.error === 'expired') return fail(...EXPIRED, false);
+    if (d.error === 'denied') return show('s-cancel');
+    if (d.error) return fail('연결에 실패했어요', '다온봇 앱의 <b>메뉴 → 봇 → 로그 보기</b>에서 원인을 확인해 주세요.<br>다온봇에서 [로그인]을 다시 눌러 시도할 수도 있어요.', false);
+    const a = d.account || {};
+    $('ver').textContent = `${d.app.name}${d.app.version ? ' v' + d.app.version : ''}`;
+    $('nick').textContent = a.nickname || 'DJ 계정';
+    $('sub').textContent = [a.tag ? '@' + a.tag : '', a.id ? '계정 ID ' + a.id : ''].filter(Boolean).join(' · ');
+    const img = $('avatar');
+    img.src = a.image || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/><circle cx="28" cy="22" r="10" fill="#e8eef5"/><ellipse cx="28" cy="52" rx="20" ry="16" fill="#e8eef5"/></svg>');
+    img.onerror = () => { img.onerror = null; img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/></svg>'); };
+    show('s-ask');
+  }
+
+  $('b-yes').onclick = async () => {
+    $('b-yes').disabled = $('b-no').disabled = true; $('b-yes').textContent = '연결 중...';
+    try {
+      const d = await call('/api/connect/confirm', { state });
+      if (d.ok) return show('s-done');
+      if (d.error === 'expired') return fail(...EXPIRED, false);
+      fail('연결에 실패했어요', '다온봇 앱에서 <b>[로그인]</b>을 다시 눌러 주세요.', false);
+    } catch { fail('다온봇 앱과 통신하지 못했어요', '이 PC에서 다온봇 앱이 켜져 있어야 연결할 수 있어요.', true); }
+  };
+  $('b-no').onclick = async () => {
+    $('b-yes').disabled = $('b-no').disabled = true;
+    try { await call('/api/connect/cancel', { state }); } catch {}
+    show('s-cancel');
+  };
+  $('b-retry').onclick = load;
+  load();
+})();
+</script>
+</body>
+</html>
