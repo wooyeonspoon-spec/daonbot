@@ -6,14 +6,16 @@ const { CLIENT_ID, CLIENT_SECRET } = process.env;
 const REGION = process.env.REGION || 'kr';
 const REDIRECT_URI = process.env.REDIRECT_URI || 'http://localhost:3000/callback'; // 앱이 쓰는 값과 같아야 해요
 const BASE = `https://${REGION}-openapi.spooncast.net`;
-if (!CLIENT_ID || !CLIENT_SECRET) { console.error('CLIENT_ID / CLIENT_SECRET 환경변수가 필요해요.'); process.exit(1); }
+const READY = !!(CLIENT_ID && CLIENT_SECRET);
+if (!READY) console.error('⚠️ CLIENT_ID / CLIENT_SECRET 환경변수가 없어요. Render > Environment 에서 넣어 주세요. (서버는 켜 두고 /health 는 응답해요)');
 
 const hits = new Map(); // 아주 단순한 속도 제한: IP당 1분 30회
 setInterval(() => hits.clear(), 60000).unref();
 
 http.createServer(async (req, res) => {
   const send = (c, o) => { res.writeHead(c, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(o)); };
-  if (req.method === 'GET' && req.url === '/health') return send(200, { ok: true });
+  if (req.method === 'GET' && (req.url === '/health' || req.url === '/')) return send(200, { ok: true, ready: READY });
+  if (!READY) return send(500, { error: 'server not configured' });
   if (req.method !== 'POST' || req.url !== '/token') return send(404, {});
   const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress;
   hits.set(ip, (hits.get(ip) || 0) + 1);
@@ -32,4 +34,4 @@ http.createServer(async (req, res) => {
       body: form.toString() });
     res.writeHead(r.status, { 'Content-Type': 'application/json' }); res.end(await r.text());
   } catch (e) { send(502, { error: 'upstream error' }); }
-}).listen(process.env.PORT || 8080, () => console.log('relay on', process.env.PORT || 8080));
+}).listen(process.env.PORT || 8080, '0.0.0.0', () => console.log('relay on', process.env.PORT || 8080));
