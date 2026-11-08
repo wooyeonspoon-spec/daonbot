@@ -69,6 +69,7 @@
         </div>
       </div>
     </div>
+    <p class="small hide" id="diag" style="margin:-8px 0 18px;word-break:break-all"></p>
     <div class="btns">
       <button class="no" id="b-no">취소</button>
       <button class="yes" id="b-yes">연결</button>
@@ -128,6 +129,7 @@
     $('ver').textContent = `${d.app.name}${d.app.version ? ' v' + d.app.version : ''}`;
     $('nick').textContent = a.nickname || 'DJ 계정';
     $('sub').textContent = [a.tag ? '@' + a.tag : '', a.id ? '계정 ID ' + a.id : ''].filter(Boolean).join(' · ');
+    if (!a.nickname && a.keys) { $('diag').textContent = '계정 이름을 가져오지 못했어요. 개발자 확인용 항목: ' + a.keys; $('diag').classList.remove('hide'); }
     const img = $('avatar');
     img.src = a.image || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/><circle cx="28" cy="22" r="10" fill="#e8eef5"/><ellipse cx="28" cy="52" rx="20" ry="16" fill="#e8eef5"/></svg>');
     img.onerror = () => { img.onerror = null; img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/></svg>'); };
