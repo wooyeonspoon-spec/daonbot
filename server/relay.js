@@ -4,7 +4,10 @@
 const http = require('http');
 const { CLIENT_ID, CLIENT_SECRET } = process.env;
 const REGION = process.env.REGION || 'kr';
-const REDIRECT_URI = process.env.REDIRECT_URI || 'http://localhost:3000/callback'; // 앱이 쓰는 값과 같아야 해요
+const DEFAULT_REDIRECT = 'https://wooyeonspoon-spec.github.io/daonbot/connect/';
+const REDIRECT_URI = process.env.REDIRECT_URI || DEFAULT_REDIRECT; // 앱이 쓰는 값과 같아야 해요
+// 허용하는 redirect 주소 목록: Render 환경변수 값 + 현재 연결 화면 주소 (둘 중 하나와 같으면 통과)
+const ALLOWED_REDIRECTS = new Set([REDIRECT_URI, DEFAULT_REDIRECT]);
 const BASE = `https://${REGION}-openapi.spooncast.net`;
 const READY = !!(CLIENT_ID && CLIENT_SECRET);
 if (!READY) console.error('⚠️ CLIENT_ID / CLIENT_SECRET 환경변수가 없어요. Render > Environment 에서 넣어 주세요. (서버는 켜 두고 /health 는 응답해요)');
@@ -14,20 +17,26 @@ setInterval(() => hits.clear(), 60000).unref();
 
 http.createServer(async (req, res) => {
   const send = (c, o) => { res.writeHead(c, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(o)); };
-  if (req.method === 'GET' && (req.url === '/health' || req.url === '/')) return send(200, { ok: true, ready: READY });
+  if (req.method === 'GET' && (req.url === '/health' || req.url === '/')) return send(200, { ok: true, ready: READY, redirectUri: REDIRECT_URI, version: '1.4.10' });
   if (!READY) return send(500, { error: 'server not configured' });
   if (req.method !== 'POST' || req.url !== '/token') return send(404, {});
   const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress;
   hits.set(ip, (hits.get(ip) || 0) + 1);
   if (hits.get(ip) > 30) return send(429, { error: 'too many requests' });
   let body = ''; for await (const c of req) { body += c; if (body.length > 4096) return send(413, {}); }
-  let p; try { p = JSON.parse(body); } catch { return send(400, {}); }
+  let p; try { p = JSON.parse(body); } catch { return send(400, { error: 'bad request', reason: 'json' }); }
   const form = new URLSearchParams();
-  if (p.grant_type === 'authorization_code' && p.code && p.redirect_uri === REDIRECT_URI) {
-    form.set('grant_type', 'authorization_code'); form.set('code', String(p.code)); form.set('redirect_uri', REDIRECT_URI);
+  if (p.grant_type === 'authorization_code' && p.code && ALLOWED_REDIRECTS.has(p.redirect_uri)) {
+    form.set('grant_type', 'authorization_code'); form.set('code', String(p.code)); form.set('redirect_uri', p.redirect_uri);
   } else if (p.grant_type === 'refresh_token' && p.refresh_token) {
     form.set('grant_type', 'refresh_token'); form.set('refresh_token', String(p.refresh_token));
-  } else return send(400, { error: 'bad request' }); // 이 두 가지 외에는 중계하지 않아요
+  } else {
+    // 이 두 가지 외에는 중계하지 않아요. 원인을 알 수 있게 reason 을 같이 보내요.
+    const reason = p.grant_type === 'authorization_code'
+      ? (!p.code ? 'no_code' : 'redirect_mismatch(앱=' + p.redirect_uri + ' / 서버=' + REDIRECT_URI + ')')
+      : (p.grant_type === 'refresh_token' ? 'no_refresh_token' : 'bad_grant_type');
+    return send(400, { error: 'bad request', reason });
+  }
   try {
     const r = await fetch(`${BASE}/v1/oauth/token`, { method: 'POST',
       headers: { Authorization: 'Basic ' + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64'), 'Content-Type': 'application/x-www-form-urlencoded' },
