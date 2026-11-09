@@ -62,14 +62,22 @@
         <p class="small">연결 방식 · 스푼 공식 로그인</p>
       </div>
       <div class="card">
-        <p class="label">Spoon 계정</p>
+        <p class="label">연결되는 스푼 계정</p>
         <div class="acct">
           <img class="avatar" id="avatar" alt="" referrerpolicy="no-referrer">
           <div><p class="nick" id="nick">-</p><p class="small" id="sub"></p></div>
         </div>
       </div>
     </div>
-    <p class="small hide" id="diag" style="margin:-8px 0 18px;word-break:break-all"></p>
+    <p class="small hide" id="diag" style="margin:-8px 0 14px;word-break:break-all"></p>
+    <div class="help" id="know" style="margin:0 0 20px;font-size:13.5px;line-height:1.75">
+      <b>연결하기 전에 꼭 알아두세요</b><br>
+      · 연결되는 계정은 <b>방금 스푼 [허용] 화면에서 로그인되어 있던 계정(방송하는 DJ 본인)</b>이에요.<br>
+      · 이름 대신 <b>확인 코드</b>가 보이는 건 오류가 아니에요. 스푼 공식 API가 계정 이름을 알려주지 않아서, 이 앱 전용으로 암호화된 코드만 보여요. 스푼에 보이는 ID와는 달라요.<br>
+      · 봇은 DJ 이름이 아니라 <b><span class="bn">다온봇 계정</span> 계정</b>의 이름으로 청취자처럼 방에 들어와 채팅해요.<br>
+      · 입장·팔로우 인사는 방송 화면에서 <b><span class="bn">다온봇 계정</span>을 [매니저로 임명]</b>해야 작동해요.<br>
+      · 연결하면 방송에 "스푼 개발자를 통해 승인받은 프로그램" 안내 문구가 자동으로 한 번 올라와요.
+    </div>
     <div class="btns">
       <button class="no" id="b-no">취소</button>
       <button class="yes" id="b-yes">연결</button>
@@ -127,9 +135,11 @@
     if (d.error) return fail('연결에 실패했어요', '다온봇 앱의 <b>메뉴 → 봇 → 로그 보기</b>에서 원인을 확인해 주세요.<br>다온봇에서 [로그인]을 다시 눌러 시도할 수도 있어요.', false);
     const a = d.account || {};
     $('ver').textContent = `${d.app.name}${d.app.version ? ' v' + d.app.version : ''}`;
-    $('nick').textContent = a.nickname || 'DJ 계정';
-    $('sub').textContent = [a.tag ? '@' + a.tag : '', a.id ? '계정 ID ' + a.id : ''].filter(Boolean).join(' · ');
-    if (!a.nickname && a.keys) { $('diag').textContent = '계정 이름을 가져오지 못했어요. 개발자 확인용 항목: ' + a.keys; $('diag').classList.remove('hide'); }
+    const shortId = (v) => (v && v.length > 12 ? v.slice(0, 5) + '…' + v.slice(-4) : v || '');
+    const bn = (d.app && d.app.botName) || '다온봇 계정'; for (const e of document.querySelectorAll('.bn')) e.textContent = bn;
+    $('nick').textContent = a.nickname || '방금 허용한 스푼 계정';
+    $('sub').textContent = a.nickname ? [a.tag ? '@' + a.tag : '', a.id ? '확인 코드 ' + shortId(a.id) : ''].filter(Boolean).join(' · ') : (a.id ? '확인 코드 ' + shortId(a.id) : '');
+    if (!a.nickname) { $('diag').textContent = '계정 이름은 표시할 수 없어요. 연결 후 방송에서 DJ가 채팅을 한 번 치면 다온봇 화면에 DJ 이름이 표시돼요.'; $('diag').classList.remove('hide'); }
     const img = $('avatar');
     img.src = a.image || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/><circle cx="28" cy="22" r="10" fill="#e8eef5"/><ellipse cx="28" cy="52" rx="20" ry="16" fill="#e8eef5"/></svg>');
     img.onerror = () => { img.onerror = null; img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56"><rect width="56" height="56" fill="#9fb4cc"/></svg>'); };
